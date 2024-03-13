@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const GeolocationApp(),
+      home: const LoginPage(),
     );
   }
 }
@@ -30,6 +30,7 @@ class GeolocationApp extends StatefulWidget {
   @override
   State<GeolocationApp> createState() => _GeolocationAppState();
 }
+
 
 class _GeolocationAppState extends State<GeolocationApp> {
 
@@ -114,9 +115,81 @@ class _GeolocationAppState extends State<GeolocationApp> {
 
             ),
 
-
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Navigate back to HomePage
+              },
+              child: Text('Go Back'),
+            ),
           ],
         )),
       );
     }
   }
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override Widget build(BuildContext context) { return Scaffold( appBar: AppBar(
+    title: Text('Login'), ), body: Center( child: SingleChildScrollView(
+    child: Padding(
+      padding: const EdgeInsets.all(20),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [ Image.asset('assets/snims.png'),
+
+
+            const SizedBox(height: 30),
+            const Text( 'Sree Narayana Institute of Medical Sciences',
+              style: TextStyle(
+                fontSize: 24, fontWeight: FontWeight.bold, ), ),
+            SizedBox(height: 20),
+            TextFormField( decoration:
+            InputDecoration(
+              labelText: 'Email Address',
+              hintText: 'Enter your email address',
+              prefixIcon: Icon(Icons.email),
+              border: OutlineInputBorder(), ),
+              validator: (value) { if (value == null || value.isEmpty)
+              { return 'Please enter your email address'; } return null; },
+            ),
+            SizedBox(height: 20), TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Password',
+                hintText: 'Enter your password',
+                prefixIcon: Icon(Icons.lock),
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password'; }
+                return null; },
+              obscureText: true, ),
+            SizedBox(height: 30),
+            ElevatedButton( onPressed: () {
+              if (_formKey.currentState?.validate() ?? false) {
+              // Handle login form submission
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>GeolocationApp()),
+                );
+              }
+              },
+              child: Text('Log In'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue[700],
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(10), ), ), ),
+            SizedBox(height: 20),
+            Text( 'Forgot your password?',
+              style:
+              TextStyle( fontSize: 16, color: Colors.blue[700], ), ), ], ), ), ), ), ), );
+  }
+}
