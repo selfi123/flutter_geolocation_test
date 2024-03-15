@@ -203,67 +203,66 @@ class DutyTime extends StatefulWidget {
 
 class _DutyTimeState extends State<DutyTime> {
   final _formKey = GlobalKey<FormState>();
-  TimeOfDay? _selectedTime;
 
-  String _formattedTime = "";
+
+  // List of duty time options (can be customized)
+  final List<String> dutyTimeOptions = ['t1', 't2', 't3'];
+  String? _selectedDutyTime;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("set your duty time"),
         centerTitle: true,
-        backgroundColor: Colors.yellow,
-        foregroundColor: Colors.brown,
+        backgroundColor: Color(int.parse('0xed6433', radix: 16)),      foregroundColor: Colors.brown,
       ),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child:Form(
+            child: Form(
               key: _formKey,
-              child: Column(mainAxisAlignment: MainAxisAlignment.center,
-              children: [const Text('please selec yout futy time : ',
-              style:TextStyle(fontSize: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Please select your duty time:', style: TextStyle(fontSize: 20)),
+                  const SizedBox(height: 20),
+
+                  // Dropdown for selecting duty time
+                  DropdownButton<String>(
+                    value: _selectedDutyTime,
+                    items: dutyTimeOptions.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    hint: const Text('Select Duty Time'),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedDutyTime = value;
+                      });
+                    },
+                  ),
+
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_selectedDutyTime!=null) {
+                        // Handle form submission
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => GeolocationApp()));
+                      }
+                    },
+                    child: const Text("Submit"),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(onPressed: () {
-                _pickTime(context);
-              },
-                  child: Text(_formattedTime.isEmpty
-              ? 'Select Time'
-              : _formattedTime),
             ),
-            const SizedBox(height: 30),
-            ElevatedButton(onPressed: (){
-              if (_formKey.currentState!.validate()){
-                Navigator.push(context,MaterialPageRoute(builder: (context)=> GeolocationApp())
-                );
-              }
-            }, child: const Text("Submit"),
-            ),
-            ],
           ),
-            ),
-
-          ),
-    ),
-          ),
+        ),
+      ),
     );
   }
-  void _pickTime(BuildContext context) async {
-    final now = DateTime.now();
-    final initialTime = TimeOfDay(hour: now.hour, minute: now.minute);
 
-    final pickedTime = await showTimePicker(
-      context: context,
-      initialTime: initialTime,
-    );
-
-    if (pickedTime != null && pickedTime != initialTime) {
-      setState(() {
-        _selectedTime = pickedTime;
-        _formattedTime = DateFormat.Hm().format(DateTime(now.year, now.month, now.day, pickedTime.hour, pickedTime.minute));
-      });
-    }
-  }
 }

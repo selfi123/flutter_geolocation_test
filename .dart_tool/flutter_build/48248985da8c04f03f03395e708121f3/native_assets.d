@@ -1,0 +1,1 @@
+ D:\\programs\\flutter\\flutter_geolocation_test\\.dart_tool\\flutter_build\\48248985da8c04f03f03395e708121f3\\native_assets.yaml: 
