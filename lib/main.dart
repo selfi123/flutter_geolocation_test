@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-
+import 'package:intl/intl.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton( onPressed: () {
               if (_formKey.currentState?.validate() ?? false) {
               // Handle login form submission
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>GeolocationApp()),
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>DutyTime()),
                 );
               }
               },
@@ -192,5 +192,78 @@ class _GeolocationAppState extends State<GeolocationApp> {
         ],
       )),
     );
+  }
+}
+class DutyTime extends StatefulWidget {
+  const DutyTime({super.key});
+
+  @override
+  State<DutyTime> createState() => _DutyTimeState();
+}
+
+class _DutyTimeState extends State<DutyTime> {
+  final _formKey = GlobalKey<FormState>();
+  TimeOfDay? _selectedTime;
+
+  String _formattedTime = "";
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("set your duty time"),
+        centerTitle: true,
+        backgroundColor: Colors.yellow,
+        foregroundColor: Colors.brown,
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child:Form(
+              key: _formKey,
+              child: Column(mainAxisAlignment: MainAxisAlignment.center,
+              children: [const Text('please selec yout futy time : ',
+              style:TextStyle(fontSize: 20),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(onPressed: () {
+                _pickTime(context);
+              },
+                  child: Text(_formattedTime.isEmpty
+              ? 'Select Time'
+              : _formattedTime),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(onPressed: (){
+              if (_formKey.currentState!.validate()){
+                Navigator.push(context,MaterialPageRoute(builder: (context)=> GeolocationApp())
+                );
+              }
+            }, child: const Text("Submit"),
+            ),
+            ],
+          ),
+            ),
+
+          ),
+    ),
+          ),
+    );
+  }
+  void _pickTime(BuildContext context) async {
+    final now = DateTime.now();
+    final initialTime = TimeOfDay(hour: now.hour, minute: now.minute);
+
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+    );
+
+    if (pickedTime != null && pickedTime != initialTime) {
+      setState(() {
+        _selectedTime = pickedTime;
+        _formattedTime = DateFormat.Hm().format(DateTime(now.year, now.month, now.day, pickedTime.hour, pickedTime.minute));
+      });
+    }
   }
 }
